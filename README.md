@@ -57,9 +57,10 @@ The project uses the Google Gemini API for its AI capabilities.
 ## ▶️ How to Run the Project;
 You must have both the backend and frontend running simultaneously.
 
-- Step 1: Run the Backend ServerMake sure you are in the backend directory with your virtual environment activated.Run the Flask application:flask run
+- Step 1: Run the Backend ServerMake sure you are in the backend directory with your virtual environment activated.Run the Flask application:flask run. You should see output indicating the server is running on http://127.0.0.1:5000. Keep this terminal open.
 
-- You should see output indicating the server is running on http://127.0.0.1:5000. Keep this terminal open.Step 2: Run the FrontendOpen a new terminal window.Navigate to the frontend directory:cd frontend
+- Step 2: Run the FrontendOpen a new terminal window.Navigate to the frontend directory:cd frontend
 
-- The easiest way to run the frontend is with a simple web server. If you have VS Code, we recommend using the "Live Server" extension.Right-click on index.html and select "Open with Live Server".
+- The easiest way to run the frontend is with a simple web server. If you have VS Code, we recommend using the "Live Server" extension.
+- - Right-click on index.html and select "Open with Live Server".
 
