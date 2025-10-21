@@ -1,0 +1,266 @@
+<!-- frontend/chat.html (With Video Display) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teachable AI Chat</title>
+    <link rel="stylesheet" href="chat.css">
+</head>
+<body>
+    <div class="chat-app-container">
+        
+        <header class="chat-header">
+            <a href="personalize.html" class="back-button" title="Change Mode">↩️</a>
+            
+            <button id="tts-toggle-button" title="Turn on Text-to-Speech">🔇</button>
+            <div class="lesson-selector">
+                <select title="lesson-select" id="lesson-select"></select>
+            </div>
+        </header>
+
+        <main class="message-list" id="message-list"></main>
+
+        <footer class="chat-input-area">
+            <input type="text" id="question-input" placeholder="Ask a question...">
+            <button id="ask-button" title="Send">➤</button>
+            <button id="record-button" title="Ask with voice">🎙️</button>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- Element References ---
+        const messageList = document.getElementById('message-list');
+        const lessonSelect = document.getElementById('lesson-select');
+        const questionInput = document.getElementById('question-input');
+        const askButton = document.getElementById('ask-button');
+        const recordButton = document.getElementById('record-button');
+        // NEW: Add TTS Button Reference
+        const ttsToggleButton = document.getElementById('tts-toggle-button');
+
+        // --- State Variables ---
+        let currentMode = 'standard';
+        const backendBaseUrl = 'http://127.0.0.1:5000';
+
+        // NEW: TTS State and Voice Selection
+        let isTtsEnabled = false; // Off by default
+        let selectedVoice = null; // We will try to find a better voice
+
+        // --- Helper to Create Message Bubbles (Unchanged) ---
+        function createMessageBubble(sender, content) {
+            const bubble = document.createElement('div');
+            bubble.classList.add('message-bubble', `${sender}-message`);
+
+            // Check for and create media element
+            if (content.media && content.media.path) {
+                const mediaPath = `${backendBaseUrl}/content/${content.lessonId}/${content.media.path}`;
+                let mediaElement;
+
+                if (content.media.type === 'image') {
+                    mediaElement = document.createElement('img');
+                } else if (content.media.type === 'video') {
+                    mediaElement = document.createElement('video');
+                    mediaElement.controls = true; // Show video player controls
+                }
+
+                if (mediaElement) {
+                    mediaElement.src = mediaPath;
+                    bubble.appendChild(mediaElement);
+                }
+            }
+
+            if (content.text) {
+                const p = document.createElement('p');
+                p.innerHTML = content.text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); // Render markdown bold
+                bubble.appendChild(p);
+            }
+
+            messageList.appendChild(bubble);
+            messageList.scrollTop = messageList.scrollHeight;
+            return bubble;
+        }
+
+        // --- Main Chat Function (Unchanged) ---
+        // It calls speakText(), which now has the toggle logic
+        async function handleAskQuestion() {
+            const question = questionInput.value.trim();
+            const lessonId = lessonSelect.value;
+            if (!question || !lessonId) return;
+            createMessageBubble('user', { text: question });
+            questionInput.value = '';
+
+            const thinkingBubble = createMessageBubble('ai', { text: 'Thinking...' });
+            askButton.disabled = true;
+            recordButton.disabled = true;
+
+            try {
+                const response = await fetch(`${backendBaseUrl}/ask`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        question: question,
+                        lesson_id: lessonId,
+                        mode: currentMode
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                messageList.removeChild(thinkingBubble);
+                const aiContent = {
+                    text: data.answer,
+                    media: data.media,
+                    lessonId: data.lesson_id
+                };
+                createMessageBubble('ai', aiContent);
+
+                // This call will now respect the isTtsEnabled toggle
+                speakText(data.answer);
+
+            } catch (error) {
+                messageList.removeChild(thinkingBubble);
+                createMessageBubble('ai', { text: `Sorry, I ran into an error: ${error.message}` });
+                console.error("Error asking question:", error);
+            } finally {
+                askButton.disabled = false;
+                recordButton.disabled = false;
+            }
+        }
+
+        // --- MODIFIED: Page Initialization ---
+        function initializePage() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const modeFromURL = urlParams.get('mode');
+            if (['standard', 'visual_assist', 'simplified'].includes(modeFromURL)) {
+                currentMode = modeFromURL;
+            }
+
+            // NEW: Set default TTS state based on mode
+            if (currentMode === 'visual_assist') {
+                isTtsEnabled = true; // ON by default for blind users
+            } else {
+                isTtsEnabled = false; // OFF by default for everyone else
+            }
+
+            setupSpeechSynthesis(); // Call new function to load voices
+            updateTtsButtonState(); // Call new function to set button UI
+
+            loadLessons();
+            createMessageBubble('ai', { text: 'Hello! Please select a lesson to get started.' });
+        }
+
+        // --- (loadLessons function is unchanged) ---
+        async function loadLessons() {
+            try {
+                const response = await fetch(`${backendBaseUrl}/lessons`);
+                const lessons = await response.json();
+                lessonSelect.innerHTML = '';
+                lessons.forEach(lesson => {
+                    const option = document.createElement('option');
+                    option.value = lesson.id;
+                    option.textContent = lesson.title;
+                    lessonSelect.appendChild(option);
+                });
+            } catch (error) { console.error("Error loading lessons:", error); }
+        }
+
+        // --- NEW: Function to load voices and select a better one ---
+        function setupSpeechSynthesis() {
+            function loadVoices() {
+                const voices = window.speechSynthesis.getVoices();
+                if (voices.length === 0) return; // Wait for the event
+
+                // Try to find a high-quality voice
+                // "Google US English" is often very good. Microsoft Zira/David are also good.
+                selectedVoice = voices.find(voice => voice.name === 'Google US English');
+                
+                if (!selectedVoice) {
+                    selectedVoice = voices.find(voice => voice.lang === 'en-US' && voice.name.includes('Microsoft'));
+                }
+                if (!selectedVoice) {
+                    // Fallback to any default US-English voice
+                    selectedVoice = voices.find(voice => voice.lang === 'en-US' && voice.default);
+                }
+                console.log("Selected TTS Voice:", selectedVoice ? selectedVoice.name : "Browser Default");
+            }
+            
+            // Voices are loaded asynchronously, so we must wait for the event
+            window.speechSynthesis.onvoiceschanged = loadVoices;
+            // Call it once just in case voices are already loaded
+            loadVoices();
+        }
+
+        // --- NEW: Function to update the toggle button's appearance ---
+        function updateTtsButtonState() {
+            if (isTtsEnabled) {
+                ttsToggleButton.classList.add('tts-active');
+                ttsToggleButton.textContent = '🔊';
+                ttsToggleButton.title = 'Turn off Text-to-Speech';
+            } else {
+                ttsToggleButton.classList.remove('tts-active');
+                ttsToggleButton.textContent = '🔇';
+                ttsToggleButton.title = 'Turn on Text-to-Speech';
+            }
+        }
+
+        // --- MODIFIED: speakText() ---
+        function speakText(text) {
+            // --- THIS IS THE MAIN TOGGLE ---
+            if (!isTtsEnabled) return; // Do nothing if TTS is disabled
+            // --- END ---
+
+            window.speechSynthesis.cancel(); // Stop any previous speech
+
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+
+                // --- NEW: Apply the selected voice ---
+                if (selectedVoice) {
+                    utterance.voice = selectedVoice;
+                }
+                // --- END ---
+
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        // --- Event Listeners ---
+        askButton.addEventListener('click', handleAskQuestion);
+        questionInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleAskQuestion(); });
+
+        // --- NEW: Event listener for the toggle button ---
+        ttsToggleButton.addEventListener('click', () => {
+            isTtsEnabled = !isTtsEnabled; // Flip the state
+            updateTtsButtonState();       // Update the button's look
+            if (!isTtsEnabled) {
+                window.speechSynthesis.cancel(); // If turning off, stop speaking
+            }
+        });
+        // --- END ---
+
+        // --- (Speech Recognition section is unchanged) ---
+        if ('webkitSpeechRecognition' in window) {
+            const recognition = new webkitSpeechRecognition();
+            recognition.continuous = false;
+            recognition.lang = 'en-US';
+            recognition.onresult = (event) => {
+                questionInput.value = event.results[0][0].transcript;
+                handleAskQuestion();
+            };
+            recordButton.addEventListener('click', () => recognition.start());
+        } else {
+            recordButton.style.display = 'none';
+        }
+
+        // --- (DOMContentLoaded listener is unchanged) ---
+        document.addEventListener('DOMContentLoaded', initializePage);
+    </script>
+</body>
+</html>

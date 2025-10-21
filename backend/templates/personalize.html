@@ -1,0 +1,49 @@
+<!-- frontend/personalize.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personalize Your Experience - Project Teachable</title>
+    <link rel="stylesheet" href="personalize.css">
+</head>
+<body>
+    <div class="personalize-container">
+        <h1>How would you like to learn?</h1>
+        <p class="subtitle">Select the option that best describes your needs to tailor your learning environment.</p>
+
+        
+
+        <div class="options-grid">
+            
+            <!-- This is the variation we will build out first -->
+            <a href="chat.html?mode=visual_assist" class="option-card">
+                <div class="icon">👁️</div>
+                <h2>I have a visual impairment</h2>
+                <p>This mode provides rich, spoken descriptions of all images and visual content.</p>
+            </a>
+            
+            <!-- This card links to the simplified mode, which already works -->
+            <a href="chat.html?mode=simplified" class="option-card">
+                <div class="icon">🧠</div>
+                <h2>I benefit from simplified text</h2>
+                <p>This mode (e.g., for Dyslexia) uses clearer language and shorter sentences.</p>
+            </a>
+
+            <!-- These are placeholders for future development -->
+            <a href="chat.html?mode=standard" class="option-card">
+                <div class="icon">👂</div>
+                <h2>I have a hearing impairment</h2>
+                <p>This mode will focus on strong visual cues and detailed transcripts. (Coming Soon)</p>
+            </a>
+            
+            <a href="chat.html?mode=standard" class="option-card">
+                <div class="icon">🚀</div>
+                <h2>Standard Experience</h2>
+                <p>Explore all features in the balanced, standard learning environment.</p>
+            </a>
+
+        </div>
+    </div>
+</body>
+</html>

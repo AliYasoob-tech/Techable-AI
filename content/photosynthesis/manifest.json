@@ -1,0 +1,66 @@
+{
+    "title": "Introduction to Photosynthesis",
+    "summary": "This lesson covers the complete process of photosynthesis: what it is, why it's important, its chemical formula, where it occurs, the key stages, and the factors that affect it.",
+    "modules": [
+        {
+            "id": "what_is_photosynthesis",
+            "topic": "What is Photosynthesis?",
+            "text_content": "Photosynthesis is the remarkable process used by plants, algae, and some bacteria to convert light energy into chemical energy. This chemical energy is stored in carbohydrate molecules, such as glucose (sugar), which the organism uses as food.",
+            "related_media": []
+        },
+        {
+            "id": "importance",
+            "topic": "Why Photosynthesis is Important for Life",
+            "text_content": "Photosynthesis is the foundation of nearly all life on Earth. It is the primary source of organic food for all other organisms (either directly or indirectly). Crucially, it also produces the Oxygen (O2) that we and most other living things need to breathe.",
+            "related_media": ["food_web.png"]
+        },
+        {
+            "id": "chemical_equation",
+            "topic": "The Chemical Equation of Photosynthesis",
+            "text_content": "The overall balanced chemical equation for photosynthesis is: 6CO2 + 6H2O + Light Energy → C6H12O6 + 6O2. This reads as: Six molecules of Carbon Dioxide plus six molecules of Water, using light energy, produce one molecule of Glucose (sugar) and six molecules of Oxygen.",
+            "related_media": ["equation.png"]
+        },
+        {
+            "id": "location_chloroplast",
+            "topic": "Where Photosynthesis Happens: The Chloroplast",
+            "text_content": "Photosynthesis takes place inside specialized organelles within plant and algal cells called chloroplasts. These are tiny green 'factories'. A chloroplast has an inner and outer membrane, a fluid-filled space called the stroma, and stacks of disk-like structures called thylakoids (grana).",
+            "related_media": ["chloroplast_diagram.png"]
+        },
+        {
+            "id": "key_pigment_chlorophyll",
+            "topic": "The Role of Chlorophyll Pigment",
+            "text_content": "Chlorophyll is the green pigment located in the thylakoid membranes of the chloroplasts. Its job is to absorb light energy from the sun. It primarily absorbs red and blue light and reflects green light, which is why plants look green.",
+            "related_media": ["chlorophyll_absorption_spectrum.png"]
+        },
+        {
+            "id": "inputs_outputs",
+            "topic": "Inputs and Outputs of Photosynthesis (The Recipe)",
+            "text_content": "To perform photosynthesis, a plant needs three key INPUTS: Carbon Dioxide (CO2) from the air, Water (H2O) from the soil, and Light Energy from the sun. The process creates two main OUTPUTS: Glucose (C6H12O6) for the plant's energy/growth, and Oxygen (O2) as a waste product.",
+            "related_media": ["diagram1.png"]
+        },
+        {
+            "id": "stage_one_light_reactions",
+            "topic": "Stage 1: The Light-Dependent Reactions",
+            "text_content": "This is the 'photo' part. These reactions happen in the thylakoid membranes and require light directly. They use light energy to split water molecules (releasing oxygen). The energy is temporarily stored in two energy-carrying molecules: ATP and NADPH.",
+            "related_media": ["light_reactions_diagram.png"]
+        },
+        {
+            "id": "stage_two_calvin_cycle",
+            "topic": "Stage 2: The Calvin Cycle (Light-Independent Reactions)",
+            "text_content": "This is the 'synthesis' part (making sugar). These reactions occur in the stroma (the fluid) and do *not* need light. The Calvin Cycle uses the ATP and NADPH from Stage 1 as fuel to take CO2 from the air and convert it into glucose (sugar).",
+            "related_media": ["calvin_cycle_diagram.png"]
+        },
+        {
+            "id": "affecting_factors",
+            "topic": "Factors that Affect the Rate of Photosynthesis",
+            "text_content": "The speed of photosynthesis is controlled by limiting factors. The main factors are: 1. Light Intensity (more light = more energy, up to a saturation point), 2. CO2 Concentration (more CO2 = more fuel, up to a point), and 3. Temperature (it relies on enzymes, which have an optimal temperature range and can be 'denatured' if it's too hot).",
+            "related_media": []
+        },
+        {
+            "id": "vs_respiration",
+            "topic": "Photosynthesis vs. Cellular Respiration",
+            "text_content": "Photosynthesis and Cellular Respiration are opposite but complementary processes. Photosynthesis *builds* sugar (stores energy) and releases oxygen. Cellular Respiration (done by both plants and animals) *breaks down* sugar (releases energy) and uses oxygen. The outputs of one are the inputs of the other.",
+            "related_media": ["photosynthesis_respiration_cycle.png"]
+        }
+    ]
+}

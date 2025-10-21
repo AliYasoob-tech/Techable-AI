@@ -1,0 +1,78 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+:root {
+    --primary-color: #007bff;
+    --dark-color: #333;
+    --light-color: #fff;
+    --grey-color: #f0f2f5;
+    --text-color: #555;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--grey-color);
+    margin: 0;
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* --- Main Container --- */
+.personalize-container {
+    max-width: 900px;
+    width: 100%;
+    background: var(--light-color);
+    padding: 50px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
+    text-align: center;
+}
+
+h1 {
+    font-size: 2.8em;
+    color: var(--dark-color);
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+p.subtitle {
+    font-size: 1.2em;
+    margin-bottom: 40px;
+}
+
+/* --- Options Grid --- */
+.options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two columns */
+    gap: 30px;
+}
+
+.option-card {
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+    border-radius: 10px;
+    border: 2px solid #eee;
+    text-decoration: none;
+    color: var(--text-color);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.option-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border-color: var(--primary-color);
+}
+
+.option-card .icon {
+    font-size: 3em;
+    margin-bottom: 15px;
+}
+
+.option-card h2 {
+    font-size: 1.4em;
+    color: var(--dark-color);
+    margin: 0 0 10px;
+}

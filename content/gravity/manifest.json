@@ -1,0 +1,48 @@
+{
+    "title": "Introduction to Gravity",
+    "summary": "This lesson covers the fundamental concepts of gravity, from Newton's Law of Universal Gravitation to its effects on Earth, like freefall, acceleration, and weight.",
+    "modules": [
+        {
+            "id": "what_is_gravity",
+            "topic": "What is Gravity? Newton's Big Idea",
+            "text_content": "Gravity is a fundamental force of attraction that exists between any two objects with mass. The more mass an object has, the stronger its gravitational pull. Sir Isaac Newton proposed that this force is 'universal'—it's the same force that makes an apple fall to the ground and also keeps the Moon in orbit around the Earth.",
+            "related_media": ["newton.mp4"]
+        },
+        {
+            "id": "newton_law_formula",
+            "topic": "Newton's Law of Universal Gravitation (The Formula)",
+            "text_content": "Newton's law states that the gravitational force (F) between two objects is directly proportional to the product of their masses (m1 and m2) and inversely proportional to the square of the distance (r) between their centers. The formula is: F = G * (m1*m2) / r^2",
+            "related_media": ["formula.png"]
+        },
+        {
+            "id": "what_is_big_g",
+            "topic": "The Gravitational Constant 'G'",
+            "text_content": "The 'G' in the formula is the Universal Gravitational Constant. It's a very small, fixed number (approximately 6.674 x 10^-11 N(m/kg)^2) that scales the force. Its tiny value is why we only notice the force of gravity from truly massive objects, like entire planets.",
+            "related_media": ["formula.png"]
+        },
+        {
+            "id": "freefall_and_little_g",
+            "topic": "Freefall and Acceleration due to Gravity 'g'",
+            "text_content": "On Earth, when we ignore air resistance, all objects fall with the same acceleration. This is called the acceleration due to gravity, or 'g'. Its value is approximately 9.8 meters per second squared (m/s^2). This means an object's velocity increases by 9.8 m/s for every second it falls.",
+            "related_media": ["newton.mp4"]
+        },
+        {
+            "id": "mass_vs_weight",
+            "topic": "Difference between Mass and Weight",
+            "text_content": "Mass and weight are often confused. Mass is the amount of 'stuff' (matter) in an object and is the same everywhere (e.g., on Earth or on the Moon). Weight is the force of gravity acting on that mass. You can calculate it with the formula: Weight = mass × g. This is why your mass is the same on the Moon, but your weight is much less, because the Moon's 'g' is weaker.",
+            "related_media": ["weight_vs_mass.png"]
+        },
+        {
+            "id": "g_vs_big_g",
+            "topic": "Difference between 'g' and 'G'",
+            "text_content": "It's crucial not to confuse 'g' and 'G'. 'G' is the Universal Gravitational Constant, and its value is the same everywhere in the universe. 'g' is the local acceleration due to gravity, which changes depending on the planet you are on (e.g., 'g' on Earth is 9.8 m/s^2, but on the Moon it's only 1.6 m/s^2).",
+            "related_media": ["formula.png"]
+        },
+        {
+            "id": "gravity_in_space_orbit",
+            "topic": "Gravity in Space and Orbits",
+            "text_content": "Gravity definitely exists in space! It's the force that holds the Moon in orbit around the Earth and the Earth in orbit around the Sun. An orbit is a perfect balance between an object's forward speed (its inertia) and the pull of gravity. Astronauts on the Space Station feel 'weightless' because they, and the station, are in a constant state of freefall *around* the Earth.",
+            "related_media": ["orbit.gif"]
+        }
+    ]
+}

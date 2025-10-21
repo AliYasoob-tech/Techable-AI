@@ -1,0 +1,181 @@
+<!-- frontend/chat.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teachable AI Chat</title>
+    <link rel="stylesheet" href="chat.css">
+</head>
+<body>
+    <div class="chat-app-container">
+        
+        <header class="chat-header">
+            <div class="lesson-selector">
+                <select title="lesson-select" id="lesson-select"></select>
+            </div>
+        </header>
+
+        <!-- The main scrolling area for chat messages -->
+        <main class="message-list" id="message-list"></main>
+
+        <!-- The fixed input form at the bottom -->
+        <footer class="chat-input-area">
+            <input type="text" id="question-input" placeholder="Ask a question...">
+            <button id="ask-button" title="Send">➤</button>
+            <button id="record-button" title="Ask with voice">🎙️</button>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- Element References ---
+        const messageList = document.getElementById('message-list');
+        const lessonSelect = document.getElementById('lesson-select');
+        const questionInput = document.getElementById('question-input');
+        const askButton = document.getElementById('ask-button');
+        const recordButton = document.getElementById('record-button');
+        
+        // --- State and Config ---
+        let currentMode = 'standard';
+        const backendBaseUrl = 'http://127.0.0.1:5000';
+
+        // --- Helper Function to Create Message Bubbles ---
+        function createMessageBubble(sender, content) {
+            const bubble = document.createElement('div');
+            bubble.classList.add('message-bubble', `${sender}-message`);
+
+            // If content is an image object, create an image tag
+            if (content.image) {
+                const img = document.createElement('img');
+                img.src = content.image;
+                img.alt = 'Lesson visual';
+                bubble.appendChild(img);
+            }
+            // If content has text, create a p tag
+            if (content.text) {
+                const p = document.createElement('p');
+                p.innerHTML = content.text; // Use innerHTML to render markdown bolding
+                bubble.appendChild(p);
+            }
+            
+            messageList.appendChild(bubble);
+            // Scroll to the latest message
+            messageList.scrollTop = messageList.scrollHeight;
+            return bubble;
+        }
+
+        // --- Core Application Logic ---
+        async function handleAskQuestion() {
+            const question = questionInput.value.trim();
+            const lessonId = lessonSelect.value;
+            if (!question || !lessonId) return;
+
+            // 1. Immediately display the user's question
+            createMessageBubble('user', { text: question });
+            questionInput.value = ''; // Clear input
+            
+            // 2. Display a "thinking" indicator
+            const thinkingBubble = createMessageBubble('ai', { text: 'Thinking...' });
+
+            // 3. Disable input while AI is working
+            askButton.disabled = true;
+            recordButton.disabled = true;
+
+            try {
+                const response = await fetch(`${backendBaseUrl}/ask`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        question: question,
+                        lesson_id: lessonId,
+                        mode: currentMode
+                    })
+                });
+
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                
+                const data = await response.json();
+                
+                // 4. Remove the "thinking" indicator
+                messageList.removeChild(thinkingBubble);
+
+                // 5. Create the final AI response bubble
+                const aiContent = { text: data.answer };
+                if (data.image_file && data.lesson_id) {
+                    aiContent.image = `/content/${data.lesson_id}/${data.image_file}`;
+                }
+                createMessageBubble('ai', aiContent);
+                
+                // 6. Speak the answer
+                speakText(data.answer);
+
+            } catch (error) {
+                messageList.removeChild(thinkingBubble);
+                createMessageBubble('ai', { text: 'Sorry, there was an error connecting to the server.' });
+                console.error("Error fetching from backend:", error);
+            } finally {
+                // 7. Re-enable input
+                askButton.disabled = false;
+                recordButton.disabled = false;
+            }
+        }
+
+        // --- Initialization and Event Listeners ---
+        function initializePage() {
+            // Get mode from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const modeFromURL = urlParams.get('mode');
+            if (['standard', 'visual_assist', 'simplified'].includes(modeFromURL)) {
+                currentMode = modeFromURL;
+            }
+            loadLessons();
+            createMessageBubble('ai', { text: 'Hello! Please select a lesson to get started.' });
+        }
+        
+        async function loadLessons() { /* Unchanged from previous version */ }
+        function speakText(text) { /* Unchanged from previous version */ }
+        
+        // Add the unchanged functions back in
+        async function loadLessons() {
+            try {
+                const response = await fetch(`${backendBaseUrl}/lessons`);
+                const lessons = await response.json();
+                lessonSelect.innerHTML = '';
+                lessons.forEach(lesson => {
+                    const option = document.createElement('option');
+                    option.value = lesson.id;
+                    option.textContent = lesson.title;
+                    lessonSelect.appendChild(option);
+                });
+            } catch (error) { console.error("Error loading lessons:", error); }
+        }
+        function speakText(text) {
+            window.speechSynthesis.cancel();
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+        
+        askButton.addEventListener('click', handleAskQuestion);
+        questionInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleAskQuestion(); });
+        
+        // Speech recognition logic
+        if ('webkitSpeechRecognition' in window) {
+            const recognition = new webkitSpeechRecognition();
+            recognition.continuous = false;
+            recognition.lang = 'en-US';
+            recognition.onresult = (event) => {
+                questionInput.value = event.results[0][0].transcript;
+                handleAskQuestion(); // Automatically send after recognition
+            };
+            recordButton.addEventListener('click', () => recognition.start());
+        } else {
+            recordButton.style.display = 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', initializePage);
+    </script>
+</body>
+</html>
