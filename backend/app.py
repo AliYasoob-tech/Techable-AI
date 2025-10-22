@@ -1,7 +1,7 @@
 import os
 import json
 import pathlib
-import cv2 # Import the OpenCV library
+import cv2 
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from dotenv import load_dotenv
@@ -186,9 +186,9 @@ def ask():
 
     # Insert the media *after* the first prompt part (the persona/instructions)
     if prompt_media_files:
-        prompt_parts.insert(1, prompt_media_files[0]) # Assuming one media item per module
+        prompt_parts.insert(1, prompt_media_files[0]) 
 
-    # --- 5. Call API and Return ( ---
+    # --- 5. Call API 
     try:
         model = genai.GenerativeModel(model_name="gemini-2.5-flash")
         response = model.generate_content(prompt_parts)

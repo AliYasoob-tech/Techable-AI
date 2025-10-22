@@ -42,7 +42,6 @@ p.subtitle {
     margin-bottom: 40px;
 }
 
-/* --- Options Grid --- */
 .options-grid {
     display: grid;
     grid-template-columns: 1fr 1fr; /* Two columns */
